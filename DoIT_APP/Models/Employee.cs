@@ -12,5 +12,7 @@ namespace DoIT_APP.Models
         public string Department { get; set; }
         public DateTime DateOfJoining { get; set; }
         public string PhotoFileName { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }
