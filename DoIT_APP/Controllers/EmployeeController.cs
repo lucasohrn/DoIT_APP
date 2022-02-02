@@ -30,7 +30,7 @@ namespace DoIT_APP.Controllers
         public JsonResult Get()
         {
             string query = @"
-                select EmployeeId, EmployeeName, Department, convert(varchar(10),DateOfJoining,120) as DateOfJoining, PhotoFileName
+                select *
                 from
                 dbo.Employee
             ";
@@ -58,8 +58,8 @@ namespace DoIT_APP.Controllers
         {
             string query = @"
                 insert into dbo.Employee
-                (EmployeeName, Department, DateOfJoining, PhotoFileName)
-                values (@EmployeeName, @Department, @DateOfJoining, @PhotoFileName)
+                (EmployeeName, DateOfJoining, PhotoFileName, DepartmentId, UserName, Password)
+                values (@EmployeeName, @DateOfJoining, @PhotoFileName, @DepartmentId, @UserName, @Password)
                 ";
 
             DataTable table = new DataTable();
@@ -71,9 +71,11 @@ namespace DoIT_APP.Controllers
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
                     myCommand.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
-                    myCommand.Parameters.AddWithValue("@Department", emp.Department);
                     myCommand.Parameters.AddWithValue("@DateOfJoining", emp.DateOfJoining);
                     myCommand.Parameters.AddWithValue("@PhotoFileName", emp.PhotoFileName);
+                    myCommand.Parameters.AddWithValue("@DepartmentId", emp.DepartmentId);
+                    myCommand.Parameters.AddWithValue("@UserName", emp.UserName);
+                    myCommand.Parameters.AddWithValue("@Password", emp.Password);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -91,9 +93,11 @@ namespace DoIT_APP.Controllers
             string query = @"
                 update dbo.Employee
                 set EmployeeName = @EmployeeName,
-                    Department=@Department,
                     DateOfJoining=@DateOfJoining,
-                    PhotoFileName=@PhotoFileName
+                    PhotoFileName=@PhotoFileName,
+                    DepartmentId=@DepartmentId,
+                    UserName=@UserName,
+                    Password=@Password
                 where EmployeeId = @EmployeeId
                 ";
 
@@ -107,9 +111,11 @@ namespace DoIT_APP.Controllers
                 {
                     myCommand.Parameters.AddWithValue("@EmployeeId", emp.EmployeeId);
                     myCommand.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
-                    myCommand.Parameters.AddWithValue("@Department", emp.Department);
                     myCommand.Parameters.AddWithValue("@DateOfJoining", emp.DateOfJoining);
                     myCommand.Parameters.AddWithValue("@PhotoFileName", emp.PhotoFileName);
+                    myCommand.Parameters.AddWithValue("@DepartmentId", emp.DepartmentId);
+                    myCommand.Parameters.AddWithValue("@UserName", emp.UserName);
+                    myCommand.Parameters.AddWithValue("@Password", emp.Password);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();

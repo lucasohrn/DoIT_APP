@@ -13,21 +13,48 @@ namespace DoIT_APP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TicketController : ControllerBase
+    public class TicketHeadController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public TicketController(IConfiguration configuration)
+        public TicketHeadController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
 
-        [HttpGet]
-        public JsonResult Get()
+        //[HttpGet]
+        //public JsonResult Get()
+        //{
+        //    string query = @"
+        //        select * from
+        //        dbo.TicketHead
+        //    ";
+
+        //    DataTable table = new DataTable();
+        //    string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+        //    SqlDataReader myReader;
+        //    using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+        //    {
+        //        myCon.Open();
+        //        using (SqlCommand myCommand = new SqlCommand(query, myCon))
+        //        {
+        //            myReader = myCommand.ExecuteReader();
+        //            table.Load(myReader);
+        //            myReader.Close();
+        //            myCon.Close();
+        //        }
+        //    }
+
+        //    return new JsonResult(table);
+        //}
+
+        [HttpGet("{id}")]
+        public JsonResult GetByEmployee(int id)
         {
             string query = @"
-                select * from
-                dbo.Ticket
+                select TicketHeadId from
+                dbo.TicketHead
+                where TicketHeadId = @TicketHeadId
             ";
 
             DataTable table = new DataTable();
@@ -38,6 +65,7 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    myCommand.Parameters.AddWithValue("@TicketHeadId", id);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -49,12 +77,12 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post(Ticket tic)
+        public JsonResult Post(TicketHead tic)
         {
             string query = @"
-                insert into dbo.Ticket
-                (EmployeeId, TicketHeadId)
-                values (@EmployeeId, @TicketHeadId)
+                insert into dbo.TicketHead
+                (TicketHeadName, Description, Status, DueDate, Created, ProjectId)
+                values (@TicketHeadName, @Description, @Status, @DueDate, @Created, @ProjectId)
                 ";
 
             DataTable table = new DataTable();
@@ -65,8 +93,12 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@EmployeeId", tic.EmployeeId);
-                    myCommand.Parameters.AddWithValue("@TicketHeadId", tic.TicketHeadId);
+                    myCommand.Parameters.AddWithValue("@TicketHeadName", tic.TicketHeadName);
+                    myCommand.Parameters.AddWithValue("@Description", tic.Description);
+                    myCommand.Parameters.AddWithValue("@Status", tic.Status);
+                    myCommand.Parameters.AddWithValue("@DueDate", tic.DueDate);
+                    myCommand.Parameters.AddWithValue("@Created", tic.Created);
+                    myCommand.Parameters.AddWithValue("@ProjectId", tic.ProjectId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -75,17 +107,20 @@ namespace DoIT_APP.Controllers
             }
 
             return new JsonResult("Added Successfully");
-
         }
 
         [HttpPut]
-        public JsonResult Put(Ticket tic)
+        public JsonResult Put(TicketHead tic)
         {
             string query = @"
-                update dbo.Ticket
-                set EmployeeId = @EmployeeId,
-                    TicketHeadId=@TicketHeadId
-                where EmployeeId = @EmployeeId AND TicketHeadId = @TicketHeadId
+                update dbo.TicketHead
+                set TicketHeadName = @TicketHeadName,
+                    Description=@Description,
+                    Status=@Status,
+                    DueDate=@DueDate,
+                    Created=@Created,
+                    ProjectId=@ProjectId
+                where TicketHeadId = @TicketHeadId
                 ";
 
             DataTable table = new DataTable();
@@ -96,8 +131,13 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@EmployeeId", tic.EmployeeId);
                     myCommand.Parameters.AddWithValue("@TicketHeadId", tic.TicketHeadId);
+                    myCommand.Parameters.AddWithValue("@TicketHeadName", tic.TicketHeadName);
+                    myCommand.Parameters.AddWithValue("@Description", tic.Description);
+                    myCommand.Parameters.AddWithValue("@Status", tic.Status);
+                    myCommand.Parameters.AddWithValue("@DueDate", tic.DueDate);
+                    myCommand.Parameters.AddWithValue("@Created", tic.Created);
+                    myCommand.Parameters.AddWithValue("@ProjectId", tic.ProjectId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -109,11 +149,11 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpDelete("{id}")]
-        public JsonResult Delete(int empId, int ticId)
+        public JsonResult Delete(int id)
         {
             string query = @"
-                delete from dbo.Ticket
-                where EmployeeId = @EmployeeId AND TicketHeadId = @TicketHeadId
+                delete from dbo.TicketHeadId
+                where TicketHeadId = @TicketHeadId
                 ";
 
             DataTable table = new DataTable();
@@ -124,8 +164,7 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@EmployeeId", empId);
-                    myCommand.Parameters.AddWithValue("@TicketHeadId", ticId);
+                    myCommand.Parameters.AddWithValue("@TicketHeadId", id);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
