@@ -108,7 +108,7 @@ namespace DoIT_APP.Controllers
             return new JsonResult("Updated Successfully");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public JsonResult Delete(int empId, int ticId)
         {
             string query = @"

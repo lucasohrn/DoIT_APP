@@ -13,7 +13,7 @@ using System.IO;
 
 namespace DoIT_APP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class EmployeeController : ControllerBase
     {
@@ -51,6 +51,46 @@ namespace DoIT_APP.Controllers
             }
 
             return new JsonResult(table);
+        }
+
+        [HttpGet]
+        public JsonResult LogIn(string username, string password)
+        {
+            string query = @"
+                select COUNT([employeeId]) AS emp
+                from dbo.Employee
+                where UserName=@UserName AND Password=@Password
+            ";
+            string count = "";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserName", username);
+                    myCommand.Parameters.AddWithValue("@Password", password);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        count = row["emp"].ToString();
+                    }
+
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            // Fixa för att logga in
+            if (count == "1")
+                return new JsonResult("LogIn Completed");
+            else
+                return new JsonResult("You don't have permission");
         }
 
         [HttpPost]
