@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DoIT_APP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class TicketHeadController : ControllerBase
     {
@@ -22,31 +22,31 @@ namespace DoIT_APP.Controllers
         }
 
 
-        //[HttpGet]
-        //public JsonResult Get()
-        //{
-        //    string query = @"
-        //        select * from
-        //        dbo.TicketHead
-        //    ";
+        [HttpGet]
+        public JsonResult Get()
+        {
+            string query = @"
+                select * from
+                dbo.TicketHead
+            ";
 
-        //    DataTable table = new DataTable();
-        //    string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
-        //    SqlDataReader myReader;
-        //    using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-        //    {
-        //        myCon.Open();
-        //        using (SqlCommand myCommand = new SqlCommand(query, myCon))
-        //        {
-        //            myReader = myCommand.ExecuteReader();
-        //            table.Load(myReader);
-        //            myReader.Close();
-        //            myCon.Close();
-        //        }
-        //    }
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
 
-        //    return new JsonResult(table);
-        //}
+            return new JsonResult(table);
+        }
 
         [HttpGet("{id}")]
         public JsonResult GetByEmployee(int id)

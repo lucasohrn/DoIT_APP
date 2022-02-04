@@ -88,9 +88,9 @@ namespace DoIT_APP.Controllers
 
             // Fixa för att logga in
             if (count == "1")
-                return new JsonResult("LogIn Completed");
+                return new JsonResult(true);
             else
-                return new JsonResult("You don't have permission");
+                return new JsonResult(false);
         }
 
         [HttpPost]
