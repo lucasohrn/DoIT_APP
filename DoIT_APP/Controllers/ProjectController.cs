@@ -13,10 +13,10 @@ namespace DoIT_APP.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class TicketHeadController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public TicketHeadController(IConfiguration configuration)
+        public ProjectController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -27,7 +27,7 @@ namespace DoIT_APP.Controllers
         {
             string query = @"
                 select * from
-                dbo.TicketHead
+                dbo.Project
             ";
 
             DataTable table = new DataTable();
@@ -49,12 +49,12 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpGet("{id}")]
-        public JsonResult GetByEmployee(int id)
+        public JsonResult GetByIdProject(int id)
         {
             string query = @"
-                select TicketHeadId from
-                dbo.TicketHead
-                where TicketHeadId = @TicketHeadId
+                 select ProjectId from
+                dbo.Project
+                where ProjectId = @ProjectId
             ";
 
             DataTable table = new DataTable();
@@ -77,13 +77,11 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post(TicketHead tic)
+        public JsonResult Post(Project project)
         {
-            string query = @"
-                insert into dbo.TicketHead
-                (TicketHeadName, Description, Status, DueDate, Created, ProjectId)
-                values (@TicketHeadName, @Description, @Status, @DueDate, @Created, @ProjectId)
-                ";
+            string query =
+                @"insert into dbo.Project(ProjectName, Description, CustomerId)
+                    values (@ProjectName, @Description, @CustomerId)";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
@@ -93,12 +91,9 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@TicketHeadName", tic.TicketHeadName);
-                    myCommand.Parameters.AddWithValue("@Description", tic.Description);
-                    myCommand.Parameters.AddWithValue("@Status", tic.Status);
-                    myCommand.Parameters.AddWithValue("@DueDate", tic.DueDate);
-                    myCommand.Parameters.AddWithValue("@Created", tic.Created);
-                    myCommand.Parameters.AddWithValue("@ProjectId", tic.ProjectId);
+                    myCommand.Parameters.AddWithValue("@ProjectName", project.ProjectName);
+                    myCommand.Parameters.AddWithValue("@Description", project.Description);
+                    myCommand.Parameters.AddWithValue("@CustomerId", project.CustomerId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -110,17 +105,14 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpPut]
-        public JsonResult Put(TicketHead tic)
+        public JsonResult Put(Project project)
         {
             string query = @"
-                update dbo.TicketHead
-                set TicketHeadName = @TicketHeadName,
+                update dbo.Project
+                set ProjectName = @ProjectName,
                     Description=@Description,
-                    Status=@Status,
-                    DueDate=@DueDate,
-                    Created=@Created,
-                    ProjectId=@ProjectId
-                where TicketHeadId = @TicketHeadId
+                    CustomerId=@CustomerId
+                where ProjectId = @ProjectId
                 ";
 
             DataTable table = new DataTable();
@@ -131,13 +123,10 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@TicketHeadId", tic.TicketHeadId);
-                    myCommand.Parameters.AddWithValue("@TicketHeadName", tic.TicketHeadName);
-                    myCommand.Parameters.AddWithValue("@Description", tic.Description);
-                    myCommand.Parameters.AddWithValue("@Status", tic.Status);
-                    myCommand.Parameters.AddWithValue("@DueDate", tic.DueDate);
-                    myCommand.Parameters.AddWithValue("@Created", tic.Created);
-                    myCommand.Parameters.AddWithValue("@ProjectId", tic.ProjectId);
+                    myCommand.Parameters.AddWithValue("@ProjectId", project.ProjectId);
+                    myCommand.Parameters.AddWithValue("@ProjectName", project.ProjectName);
+                    myCommand.Parameters.AddWithValue("@Description", project.Description);
+                    myCommand.Parameters.AddWithValue("@CustomerId", project.CustomerId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -152,8 +141,8 @@ namespace DoIT_APP.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                delete from dbo.TicketHead
-                where TicketHeadId = @TicketHeadId
+                delete from dbo.Project
+                where ProjectId = @ProjectId
                 ";
 
             DataTable table = new DataTable();
@@ -164,7 +153,7 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@TicketHeadId", id);
+                    myCommand.Parameters.AddWithValue("@ProjectId", id);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -174,5 +163,7 @@ namespace DoIT_APP.Controllers
 
             return new JsonResult("Deleted Successfully");
         }
+
+
     }
 }
