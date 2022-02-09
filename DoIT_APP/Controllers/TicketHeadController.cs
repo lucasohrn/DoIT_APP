@@ -49,6 +49,34 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpGet("{id}")]
+        public JsonResult GetByProject(int id)
+        {
+            string query = @"
+                select * from
+                dbo.TicketHead
+                where ProjectId = @ProjectId
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@ProjectId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("{id}")]
         public JsonResult GetByEmployee(int id)
         {
             string query = @"
