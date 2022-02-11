@@ -26,7 +26,7 @@ namespace DoIT_APP.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetEmployeeId(Employee emp)
+        public JsonResult GetEmployeeId(string emp)
         {
             string query = @"
                 select EmployeeId
@@ -43,7 +43,7 @@ namespace DoIT_APP.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
+                    myCommand.Parameters.AddWithValue("@EmployeeName", emp);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();

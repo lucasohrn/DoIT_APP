@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DoIT_APP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class TicketController : ControllerBase
     {
