@@ -25,12 +25,41 @@ namespace DoIT_APP.Controllers
             _env = env;
         }
 
+        [HttpGet]
+        public JsonResult GetEmployeeId(Employee emp)
+        {
+            string query = @"
+                select EmployeeId
+                from
+                dbo.Employee
+                WHERE EmployeeName = @EmployeeName
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@EmployeeName", emp.EmployeeName);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
 
         [HttpGet]
         public JsonResult Get()
         {
             string query = @"
-                select *
+                select EmployeeName
                 from
                 dbo.Employee
             ";
