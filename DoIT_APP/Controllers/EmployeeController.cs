@@ -53,6 +53,85 @@ namespace DoIT_APP.Controllers
 
             return new JsonResult(table);
         }
+        [HttpGet("{id}")]
+        public JsonResult GetEmployee(int id)
+        {
+            string query = @"
+                   Select EmployeeId, EmployeeName, DateOfJoining, DepartmentId,
+                UserName From Employee Where EmployeeId IN 
+                    (select EmployeeId from Ticket where TicketHeadId = @TicketHeadId)
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@TicketHeadId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+        [HttpGet ("{id}")]
+        public JsonResult GetEmployeefromticket(int Id)
+        {
+            string query = @"
+               select EmployeeName from Employee where EmployeeId in 
+                (select EmployeeId from Ticket where TicketHeadId = @TicketHeadId)
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@TicketHeadId", Id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet]
+        public JsonResult GetAllEmployee()
+        {
+            string query = @"
+                Select EmployeeId, EmployeeName, 
+                DateOfJoining, DepartmentId, UserName From Employee 
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
 
 
         [HttpGet]
