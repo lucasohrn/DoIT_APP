@@ -204,7 +204,9 @@ namespace DoIT_APP.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                delete from dbo.TicketHead
+               delete from dbo.ticket
+                where TicketHeadId = @TicketHeadId
+				 delete from dbo.TicketHead
                 where TicketHeadId = @TicketHeadId
                 ";
 
