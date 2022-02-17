@@ -107,12 +107,37 @@ namespace DoIT_APP.Controllers
             return new JsonResult(table);
         }
 
+        [HttpGet("{id}")]
+        public JsonResult GetEmployeeTicketHeads(int id)
+        {
+            string query = @"
+                Select * From TicketHead where ticketHeadId IN
+                 (Select TicketHeadId from Ticket where EmployeeId = @EmployeeId )
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@EmployeeId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
         [HttpGet]
         public JsonResult GetAllEmployee()
         {
             string query = @"
-                Select EmployeeId, EmployeeName, 
-                DateOfJoining, DepartmentId, UserName From Employee 
+                Select * From Employee 
             ";
 
             DataTable table = new DataTable();
@@ -278,8 +303,8 @@ namespace DoIT_APP.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                delete from dbo.Employee
-                where EmployeeId = @EmployeeId
+               Delete Ticket where EmployeeId = @EmployeeId
+               Delete Employee where EmployeeId = @EmployeeId
                 ";
 
             DataTable table = new DataTable();
