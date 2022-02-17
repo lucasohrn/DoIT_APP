@@ -141,8 +141,9 @@ namespace DoIT_APP.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                delete from dbo.Project
-                where ProjectId = @ProjectId
+                Delete from ticket where ticketheadId IN (Select TicketHeadId from TicketHead Where ProjectId = @ProjectId )
+                Delete from TicketHead where TicketHeadId  IN (Select TicketHeadId from TicketHead Where ProjectId = @ProjectId )
+                Delete Project where ProjectId = @ProjectId
                 ";
 
             DataTable table = new DataTable();
